@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.signal import convolve2d
+import cv2.cv2 as cv2
 
 
 def print_IDs():
@@ -24,3 +25,9 @@ def calculate_sobel_edge_detection(img):
     y_edges = convolve2d(img, sobel_matrix_y_direction, mode='same')
 
     return np.sqrt(np.square(x_edges) + np.square(y_edges))
+
+
+def calculate_canny_image(img, low_thresh, high_thresh, sobel_mat_size):
+    img = np.array(img, dtype=np.uint8)
+    edges = cv2.Canny(img, threshold1=low_thresh, threshold2=high_thresh, apertureSize=sobel_mat_size, L2gradient=True)
+    return edges
