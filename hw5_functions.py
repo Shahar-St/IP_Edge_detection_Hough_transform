@@ -33,11 +33,25 @@ def calculate_canny_image(img, low_thresh, high_thresh, sobel_mat_size):
     return edges
 
 
-def find_circles_using_hough(img):
-    img = np.array(img, dtype=float)
-    return img
+def find_circles_using_hough(img, canny_high_threshold, canny_low_threshold, min_dist_between_circles):
+    img = np.array(img, dtype=np.uint8)
+    circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, min_dist_between_circles,
+                               param1=canny_high_threshold,
+                               param2=canny_low_threshold,
+                               minRadius=0,
+                               maxRadius=0
+                               )
+    circles = np.uint16(np.around(circles))
+    return circles
 
 
-def find_lines_using_hough(img):
+def find_lines_using_hough(img, canny_params):
     img = np.array(img, dtype=float)
-    return img
+    canny_img = calculate_canny_image(img, canny_params['low_thresh'], canny_params['high_thresh'],
+                                      canny_params['sobel_mat_size'])
+
+    # todo investigate more on the params
+    #  https://opencv24-python-tutorials.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
+    lines = cv2.HoughLines(canny_img, 1, np.pi / 180, 200)
+
+    return lines
