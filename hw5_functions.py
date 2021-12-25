@@ -31,3 +31,13 @@ def calculate_canny_image(img, low_thresh, high_thresh, sobel_mat_size):
     img = np.array(img, dtype=np.uint8)
     edges = cv2.Canny(img, threshold1=low_thresh, threshold2=high_thresh, apertureSize=sobel_mat_size, L2gradient=True)
     return edges
+
+
+def find_circles_using_hough(img):
+    img = np.array(img, dtype=float)
+    return img
+
+
+def find_lines_using_hough(img):
+    img = np.array(img, dtype=float)
+    return img
