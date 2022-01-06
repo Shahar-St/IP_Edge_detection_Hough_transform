@@ -14,7 +14,7 @@ def main():
 
     balls1_sobel_edges = calculate_sobel_edge_detection(balls1_img)
     threshold = 98
-    _, bw_img = cv2.threshold(balls1_sobel_edges, threshold, 255, cv2.THRESH_BINARY)  # todo 'bw'?
+    _, bw_img = cv2.threshold(balls1_sobel_edges, threshold, 255, cv2.THRESH_BINARY)
 
     plt.figure()
     plt.subplot(1, 2, 1)
@@ -115,9 +115,10 @@ def main():
     found_lines_3 = find_lines_using_hough(box3_img, canny_params, line_thresh)
 
     hough_lines_arr = (
-        (box1_name, box1_img, found_lines_1, 14), (box2_name, box2_img, found_lines_2, 14),
+        (box1_name, box1_img, found_lines_1, 14), (box2_name, box2_img, found_lines_2, 12),
         (box3_name, box3_img, found_lines_3, 12))
 
+    img_num = 1
     for hough_lines in hough_lines_arr:
         file__name = hough_lines[0]
         original = hough_lines[1]
@@ -125,12 +126,17 @@ def main():
         lines_on_image = np.copy(original)
 
         # remove duplicated lines
-        thresh_remove_duplicate = hough_lines[3]
+        thresh_rho = hough_lines[3]
+        if img_num == 2:
+            thresh_theta = 1
+        else:
+            thresh_theta = 0
+
         lines_to_draw = [lines[0]]
         for i in range(len(lines)):
             append_flag = True
             for j in range(len(lines_to_draw)):
-                if abs(lines_to_draw[j][0][0] - lines[i][0][0]) < thresh_remove_duplicate:
+                if abs(lines_to_draw[j][0][0] - lines[i][0][0]) < thresh_rho or lines[i][0][1] < thresh_theta:
                     append_flag = False
 
             if append_flag:
@@ -156,6 +162,8 @@ def main():
         plt.subplot(1, 2, 2)
         plt.title(f'section5: Hough Lines - {file__name}')
         plt.imshow(lines_on_image, vmin=0, vmax=255)
+
+        img_num += 1
 
     plt.show()
 
